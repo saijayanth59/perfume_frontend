@@ -1,5 +1,6 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Product } from '../data/products';
+import { Product } from '../types/product';
 import { toast } from '../hooks/use-toast';
 
 export interface CartItem {
@@ -11,8 +12,8 @@ export interface CartItem {
 interface CartContextType {
   items: CartItem[];
   addItem: (product: Product, size: string, quantity: number) => void;
-  removeItem: (productId: number, size: string) => void;
-  updateQuantity: (productId: number, size: string, quantity: number) => void;
+  removeItem: (productId: string, size: string) => void;
+  updateQuantity: (productId: string, size: string, quantity: number) => void;
   clearCart: () => void;
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
@@ -55,7 +56,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addItem = (product: Product, size: string, quantity: number = 1) => {
     setItems(prevItems => {
       const existingItemIndex = prevItems.findIndex(
-        item => item.product.id === product.id && item.size === size
+        item => item.product._id === product._id && item.size === size
       );
 
       if (existingItemIndex > -1) {
@@ -76,9 +77,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
-  const removeItem = (productId: number, size: string) => {
+  const removeItem = (productId: string, size: string) => {
     setItems(prevItems => 
-      prevItems.filter(item => !(item.product.id === productId && item.size === size))
+      prevItems.filter(item => !(item.product._id === productId && item.size === size))
     );
     
     toast({
@@ -87,7 +88,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
-  const updateQuantity = (productId: number, size: string, quantity: number) => {
+  const updateQuantity = (productId: string, size: string, quantity: number) => {
     if (quantity < 1) {
       removeItem(productId, size);
       return;
@@ -95,7 +96,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     setItems(prevItems => 
       prevItems.map(item => 
-        item.product.id === productId && item.size === size
+        item.product._id === productId && item.size === size
           ? { ...item, quantity }
           : item
       )
