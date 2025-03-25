@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product } from '../data/products';
 import { toast } from '../hooks/use-toast';
@@ -11,7 +10,7 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: Product, size: string) => void;
+  addItem: (product: Product, size: string, quantity: number) => void;
   removeItem: (productId: number, size: string) => void;
   updateQuantity: (productId: number, size: string, quantity: number) => void;
   clearCart: () => void;
@@ -29,7 +28,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  // Load cart from localStorage on initial render
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
@@ -41,11 +39,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  // Save cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(items));
     
-    // Calculate totals
     const itemCount = items.reduce((total, item) => total + item.quantity, 0);
     const price = items.reduce((total, item) => {
       const sizePrice = item.product.sizes.find(s => s.size === item.size)?.price || item.product.price;
@@ -56,29 +52,26 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setTotalPrice(price);
   }, [items]);
 
-  const addItem = (product: Product, size: string) => {
+  const addItem = (product: Product, size: string, quantity: number = 1) => {
     setItems(prevItems => {
-      // Check if item already exists in cart
       const existingItemIndex = prevItems.findIndex(
         item => item.product.id === product.id && item.size === size
       );
 
       if (existingItemIndex > -1) {
-        // Update quantity of existing item
         const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex].quantity += 1;
+        updatedItems[existingItemIndex].quantity += quantity;
         toast({
           title: "Item updated",
           description: `${product.name} quantity increased`,
         });
         return updatedItems;
       } else {
-        // Add new item
         toast({
           title: "Item added to cart",
           description: `${product.name} has been added to your cart`,
         });
-        return [...prevItems, { product, quantity: 1, size }];
+        return [...prevItems, { product, quantity, size }];
       }
     });
   };
