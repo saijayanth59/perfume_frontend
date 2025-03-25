@@ -1,6 +1,5 @@
-
-import { Star } from 'lucide-react';
-import { Product } from '../data/products';
+import { Star } from "lucide-react";
+import { Product } from "../data/products";
 
 interface ProductInfoProps {
   product: Product;
@@ -14,27 +13,31 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           New Arrival
         </span>
       )}
-      
+
       <h1 className="text-3xl md:text-4xl font-bold">{product.name}</h1>
-      
+
       <div className="mt-2 text-lg text-gray-500">{product.brand}</div>
-      
+
       <div className="mt-4 flex items-center">
         <div className="flex">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Star 
-              key={i} 
-              className={`w-4 h-4 ${i < product.rating ? 'text-amber-500 fill-current' : 'text-gray-300'}`}
+            <Star
+              key={i}
+              className={`w-4 h-4 ${
+                i < product.avgRating
+                  ? "text-amber-500 fill-current"
+                  : "text-gray-300"
+              }`}
             />
           ))}
         </div>
-        <span className="ml-2 text-sm text-gray-500">({product.rating} / 5)</span>
+        <span className="ml-2 text-sm text-gray-500">
+          ({product.avgRating} / 5)
+        </span>
       </div>
-      
-      <div className="mt-6 text-2xl font-bold">
-        ${product.price.toFixed(2)}
-      </div>
-      
+
+      <div className="mt-6 text-2xl font-bold">${product.price.toFixed(2)}</div>
+
       <p className="mt-6 text-gray-600 leading-relaxed">
         {product.description}
       </p>

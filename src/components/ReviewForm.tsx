@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,8 +19,7 @@ import { useUser } from "@clerk/clerk-react";
 
 const formSchema = z.object({
   rating: z.number().min(1, { message: "Please select a rating" }).max(5),
-  title: z.string().min(3, { message: "Review title must be at least 3 characters." }),
-  comment: z.string().min(5, { message: "Review must be at least 5 characters." }),
+  comment: z.string().optional(),
 });
 
 interface ReviewFormProps {
@@ -30,38 +28,31 @@ interface ReviewFormProps {
 }
 
 export type ReviewData = z.infer<typeof formSchema> & {
-  id: string;
-  date: string;
-  productId: number;
-  name: string;
-  email: string;
+  username: string;
+  gmail: string;
 };
 
 export function ReviewForm({ productId, onReviewSubmit }: ReviewFormProps) {
   const [hoveredRating, setHoveredRating] = useState(0);
   const { user } = useUser();
-  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       rating: 0,
-      title: "",
       comment: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user) return;
-    
+
     const newReview: ReviewData = {
       ...values,
-      id: crypto.randomUUID(),
-      date: new Date().toISOString(),
-      productId,
-      name: user.fullName || user.username || 'Anonymous User',
-      email: user.primaryEmailAddress?.emailAddress || '',
+      username: user.fullName || user.username || "Anonymous User",
+      gmail: user.primaryEmailAddress?.emailAddress || "",
     };
-    
+
     onReviewSubmit(newReview);
     form.reset();
     toast.success("Your review has been submitted successfully!");
@@ -69,9 +60,12 @@ export function ReviewForm({ productId, onReviewSubmit }: ReviewFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-gray-50 p-6 rounded-lg">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6 bg-gray-50 p-6 rounded-lg"
+      >
         <h3 className="text-xl font-semibold">Write a Review</h3>
-        
+
         <FormField
           control={form.control}
           name="rating"
@@ -84,7 +78,9 @@ export function ReviewForm({ productId, onReviewSubmit }: ReviewFormProps) {
                     <Star
                       key={star}
                       className={`w-8 h-8 cursor-pointer transition-colors ${
-                        star <= (hoveredRating || field.value) ? "text-amber-500 fill-amber-500" : "text-gray-300"
+                        star <= (hoveredRating || field.value)
+                          ? "text-amber-500 fill-amber-500"
+                          : "text-gray-300"
                       }`}
                       onMouseEnter={() => setHoveredRating(star)}
                       onMouseLeave={() => setHoveredRating(0)}
@@ -97,21 +93,7 @@ export function ReviewForm({ productId, onReviewSubmit }: ReviewFormProps) {
             </FormItem>
           )}
         />
-        
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Review Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Summarize your experience" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
+
         <FormField
           control={form.control}
           name="comment"
@@ -129,8 +111,10 @@ export function ReviewForm({ productId, onReviewSubmit }: ReviewFormProps) {
             </FormItem>
           )}
         />
-        
-        <Button type="submit" className="w-full md:w-auto">Submit Review</Button>
+
+        <Button type="submit" className="w-full md:w-auto">
+          Submit Review
+        </Button>
       </form>
     </Form>
   );

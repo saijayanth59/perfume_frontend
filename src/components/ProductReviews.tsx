@@ -1,95 +1,98 @@
-
 import { useState, useEffect } from "react";
 import { ReviewForm, ReviewData } from "./ReviewForm";
+
 import { ReviewsList } from "./ReviewsList";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Star, LogIn } from "lucide-react";
 import { useAuth, SignInButton } from "@clerk/clerk-react";
+import { Product } from "@/data/products";
+import { addRating } from "@/api/product";
 
 interface ProductReviewsProps {
   productId: number;
+  product: Product;
 }
 
-export function ProductReviews({ productId }: ProductReviewsProps) {
-  const [reviews, setReviews] = useState<ReviewData[]>([]);
+export function ProductReviews({ productId, product }: ProductReviewsProps) {
+  const [reviews, setReviews] = useState<ReviewData[]>(product.ratings);
   const [isOpen, setIsOpen] = useState(false);
   const { isSignedIn } = useAuth();
-  
-  // Load reviews from localStorage on component mount
-  useEffect(() => {
-    const savedReviews = localStorage.getItem(`product-reviews-${productId}`);
-    if (savedReviews) {
-      setReviews(JSON.parse(savedReviews));
-    }
-  }, [productId]);
-  
-  // Save reviews to localStorage when they change
-  useEffect(() => {
-    localStorage.setItem(`product-reviews-${productId}`, JSON.stringify(reviews));
-  }, [reviews, productId]);
-  
-  const handleReviewSubmit = (review: ReviewData) => {
+
+  const handleReviewSubmit = async (review) => {
+    await addRating(
+      product._id,
+      review.username,
+      review.gmail,
+      review.rating,
+      review.comment
+    );
     setReviews((prev) => [review, ...prev]);
-    setIsOpen(true); // Open the reviews section after submitting
+    setIsOpen(true);
   };
-  
+
   return (
     <div className="mt-16">
       <h2 className="text-2xl font-bold mb-8">Customer Reviews</h2>
-      
+
       <div className="flex items-center mb-4">
         {/* Average rating display */}
         <div className="flex items-center">
-          {[1, 2, 3, 4, 5].map((star) => {
-            // Calculate average rating
-            const avgRating = reviews.length 
-              ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
-              : 0;
-            
-            return (
-              <Star
-                key={star}
-                className={`w-5 h-5 ${
-                  star <= Math.round(avgRating) ? "text-amber-500 fill-amber-500" : "text-gray-300"
-                }`}
-              />
-            );
-          })}
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star
+              key={i}
+              className={`w-4 h-4 ${
+                i < product.avgRating
+                  ? "text-amber-500 fill-current"
+                  : "text-gray-300"
+              }`}
+            />
+          ))}
         </div>
-        
+
         <span className="ml-2 text-gray-700">
           {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
         </span>
       </div>
-      
-      <Collapsible
-        open={isOpen}
-        onOpenChange={setIsOpen}
-        className="space-y-8"
-      >
+
+      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-8">
         <CollapsibleTrigger asChild>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="w-full flex justify-between items-center"
           >
             <span>{isOpen ? "Hide Reviews" : "Show Reviews"}</span>
-            {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            {isOpen ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
           </Button>
         </CollapsibleTrigger>
-        
+
         <CollapsibleContent className="space-y-8">
           <ReviewsList reviews={reviews} />
         </CollapsibleContent>
       </Collapsible>
-      
+
       <div className="mt-12">
         {isSignedIn ? (
-          <ReviewForm productId={productId} onReviewSubmit={handleReviewSubmit} />
+          <ReviewForm
+            productId={productId}
+            onReviewSubmit={handleReviewSubmit}
+          />
         ) : (
           <div className="bg-gray-50 p-6 rounded-lg text-center">
-            <h3 className="text-xl font-semibold mb-2">Sign in to leave a review</h3>
-            <p className="text-gray-600 mb-4">Please sign in to share your experience with this product</p>
+            <h3 className="text-xl font-semibold mb-2">
+              Sign in to leave a review
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Please sign in to share your experience with this product
+            </p>
             <SignInButton mode="modal">
               <Button className="flex items-center gap-2">
                 <LogIn className="h-4 w-4" />
