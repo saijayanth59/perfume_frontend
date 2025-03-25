@@ -1,5 +1,6 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { products } from '../data/products';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
@@ -14,6 +15,13 @@ const categoryOptions = [
   { value: 'unisex', label: 'Unisex' },
 ];
 
+const collectionOptions = [
+  { value: 'all', label: 'All Collections' },
+  { value: 'signature', label: 'Signature Collection' },
+  { value: 'seasonal', label: 'Seasonal Editions' },
+  { value: 'luxury', label: 'Luxury Line' },
+];
+
 const sortOptions = [
   { value: 'featured', label: 'Featured' },
   { value: 'price-asc', label: 'Price: Low to High' },
@@ -22,14 +30,52 @@ const sortOptions = [
 ];
 
 const Shop = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const collectionParam = queryParams.get('collection');
+  
   const [category, setCategory] = useState('all');
+  const [collection, setCollection] = useState(collectionParam || 'all');
   const [sortBy, setSortBy] = useState('featured');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Update collection state when URL param changes
+  useEffect(() => {
+    if (collectionParam) {
+      setCollection(collectionParam);
+    }
+  }, [collectionParam]);
+
+  // Helper function to determine if a product is in a collection
+  const isInCollection = (productId: number, collectionName: string) => {
+    if (collectionName === 'all') return true;
+    
+    switch(collectionName) {
+      case 'signature':
+      case 'luxury':
+        return products.find(p => p.id === productId)?.featured || false;
+      case 'seasonal':
+        return products.find(p => p.id === productId)?.new || false;
+      case 'men':
+        return products.find(p => p.id === productId)?.category === 'men';
+      case 'women':
+        return products.find(p => p.id === productId)?.category === 'women';
+      case 'unisex':
+        return products.find(p => p.id === productId)?.category === 'unisex';
+      default:
+        return true;
+    }
+  };
 
   // Filter and sort products
   const filteredProducts = products.filter(product => {
     // Apply category filter
     if (category !== 'all' && product.category !== category) {
+      return false;
+    }
+    
+    // Apply collection filter
+    if (collection !== 'all' && !isInCollection(product.id, collection)) {
       return false;
     }
     
@@ -71,7 +117,7 @@ const Shop = () => {
           </div>
           
           {/* Filters */}
-          <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -93,6 +139,22 @@ const Shop = () => {
                 onChange={(e) => setCategory(e.target.value)}
               >
                 {categoryOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            {/* Collection Filter */}
+            <div className="flex items-center">
+              <Filter className="mr-2 text-gray-400 w-4 h-4" />
+              <select
+                className="w-full py-2 pl-3 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-black appearance-none bg-white"
+                value={collection}
+                onChange={(e) => setCollection(e.target.value)}
+              >
+                {collectionOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -136,6 +198,7 @@ const Shop = () => {
                 className="mt-4 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
                 onClick={() => {
                   setCategory('all');
+                  setCollection('all');
                   setSortBy('featured');
                   setSearchQuery('');
                 }}
