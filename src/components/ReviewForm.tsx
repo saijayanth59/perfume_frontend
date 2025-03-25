@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { useUser } from "@clerk/clerk-react";
 
 const formSchema = z.object({
-  rating: z.number().min(1).max(5),
+  rating: z.number().min(1, { message: "Please select a rating" }).max(5),
   title: z.string().min(3, { message: "Review title must be at least 3 characters." }),
   comment: z.string().min(5, { message: "Review must be at least 5 characters." }),
 });
