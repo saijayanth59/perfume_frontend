@@ -17,10 +17,14 @@ export async function fetchProducts(): Promise<Product[]> {
   }
 }
 
-export async function fetchProductById(id: string): Promise<Product | undefined> {
+export async function fetchProductById(id: string): Promise<Product> {
   try {
-    const products = await fetchProducts();
-    return products.find(product => product._id === id);
+    const response = await fetch(`${API_BASE_URL}/products/${id}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch product: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data.product;
   } catch (error) {
     console.error(`Error fetching product with ID ${id}:`, error);
     throw error;
