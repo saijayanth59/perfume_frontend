@@ -3,11 +3,19 @@ import { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from './ProductCard';
-import { getFeaturedProducts, Product } from '../data/products';
+import { getFeaturedProducts, getNewProducts, Product } from '../data/products';
 
 const ProductSection = () => {
   const [activeTab, setActiveTab] = useState('featured');
   const featuredProducts = getFeaturedProducts();
+  const newProducts = getNewProducts();
+  
+  // Determine which products to display based on the active tab
+  const displayProducts = activeTab === 'featured' 
+    ? featuredProducts 
+    : activeTab === 'new' 
+      ? newProducts 
+      : featuredProducts; // Default to featured
   
   return (
     <section className="py-24 px-4 md:px-6">
@@ -59,7 +67,7 @@ const ProductSection = () => {
         
         {/* Products grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-          {featuredProducts.map((product, index) => (
+          {displayProducts.map((product, index) => (
             <ProductCard key={product.id} product={product} index={index} />
           ))}
         </div>

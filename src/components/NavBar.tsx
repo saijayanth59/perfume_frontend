@@ -1,12 +1,13 @@
 
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Search, Menu, X } from 'lucide-react';
 import Cart from './Cart';
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   // Update scrolled state on scroll
   useEffect(() => {
@@ -41,25 +42,33 @@ const NavBar = () => {
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
               to="/" 
-              className="text-sm font-medium hover:opacity-70 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-black after:origin-bottom-right after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300"
+              className={`text-sm font-medium hover:opacity-70 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-black after:origin-bottom-right ${
+                location.pathname === '/' ? 'after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-100'
+              } after:transition-transform after:duration-300`}
             >
               Home
             </Link>
             <Link 
               to="/shop" 
-              className="text-sm font-medium hover:opacity-70 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-black after:origin-bottom-right after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300"
+              className={`text-sm font-medium hover:opacity-70 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-black after:origin-bottom-right ${
+                location.pathname === '/shop' ? 'after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-100'
+              } after:transition-transform after:duration-300`}
             >
               Shop
             </Link>
             <Link 
               to="/collections" 
-              className="text-sm font-medium hover:opacity-70 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-black after:origin-bottom-right after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300"
+              className={`text-sm font-medium hover:opacity-70 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-black after:origin-bottom-right ${
+                location.pathname === '/collections' ? 'after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-100'
+              } after:transition-transform after:duration-300`}
             >
               Collections
             </Link>
             <Link 
               to="/about" 
-              className="text-sm font-medium hover:opacity-70 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-black after:origin-bottom-right after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300"
+              className={`text-sm font-medium hover:opacity-70 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-black after:origin-bottom-right ${
+                location.pathname === '/about' ? 'after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-100'
+              } after:transition-transform after:duration-300`}
             >
               About
             </Link>
