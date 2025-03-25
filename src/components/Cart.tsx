@@ -92,7 +92,7 @@ const Cart = () => {
                     const sizePrice = item.product.sizes.find(s => s.size === item.size)?.price || item.product.price;
                     
                     return (
-                      <div key={`${item.product.id}-${item.size}`} className="flex border-b pb-4">
+                      <div key={`${item.product._id}-${item.size}`} className="flex border-b pb-4">
                         {/* Product Image */}
                         <div className="w-20 h-20 rounded-md overflow-hidden">
                           <img 
@@ -117,7 +117,7 @@ const Cart = () => {
                           <div className="flex items-center justify-between mt-3">
                             <div className="flex items-center border rounded-md">
                               <button 
-                                onClick={() => updateQuantity(item.product.id, item.size, item.quantity - 1)}
+                                onClick={() => updateQuantity(item.product._id, item.size, item.quantity - 1)}
                                 className="p-1 hover:bg-gray-100"
                                 aria-label="Decrease quantity"
                               >
@@ -125,7 +125,7 @@ const Cart = () => {
                               </button>
                               <span className="px-2 text-sm">{item.quantity}</span>
                               <button 
-                                onClick={() => updateQuantity(item.product.id, item.size, item.quantity + 1)}
+                                onClick={() => updateQuantity(item.product._id, item.size, item.quantity + 1)}
                                 className="p-1 hover:bg-gray-100"
                                 aria-label="Increase quantity"
                               >
@@ -133,7 +133,7 @@ const Cart = () => {
                               </button>
                             </div>
                             <button 
-                              onClick={() => removeItem(item.product.id, item.size)}
+                              onClick={() => removeItem(item.product._id, item.size)}
                               className="text-xs text-gray-500 hover:text-black transition-colors"
                             >
                               Remove
