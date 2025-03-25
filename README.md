@@ -1,69 +1,97 @@
-# Welcome to your Lovable project
+# Perfume Shop - Full Stack Web Application
 
-## Project info
+An elegant and interactive perfume e-commerce platform built using **React (Vite), Tailwind CSS, Node.js, MongoDB, and Clerk authentication**. This project delivers a seamless shopping experience with **user authentication, product filtering, and a fully functional cart**.
 
-**URL**: https://lovable.dev/projects/17a28b11-d18f-4e32-9bd9-0b1b04fb0c52
+## 🚀 Live Demo
 
-## How can I edit this code?
+[Click Here](#) (Replace with actual link)
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 📌 Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/17a28b11-d18f-4e32-9bd9-0b1b04fb0c52) and start prompting.
+### 🔹 Frontend (React + Tailwind CSS)
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Responsive Navigation Bar** – Smooth and intuitive navigation across pages.
+- **Hero Banner** – Eye-catching call-to-action section for promotions and offers.
+- **Product Cards** – Displaying perfumes with images, descriptions, and prices.
+- **Hover Effects** – Interactive animations for a better user experience.
+- **Product Redirection** – Clicking a product opens a detailed page.
+- **Filters & Collections** – Filter perfumes by price, category, and brand.
+- **Cart System** – Add/remove products from the shopping cart.
+- **About Us Page** – Showcasing brand information.
+- **User Authentication (Clerk)** – Secure login and signup functionality.
 
-**Use your preferred IDE**
+### 🔹 Backend (Node.js + MongoDB)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Dynamic Product Management** – Fetching product details from MongoDB.
+- **Review System** – Users can read and submit reviews for perfumes.
+- **Image Gallery** – Multiple images per product.
+- **Social Sharing** – Share product details via social media.
+- **User Authentication (Clerk)** – Secure login/logout functionality.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+🔗 **Backend Repository:** [GitHub Link](https://github.com/yourusername/perfume-shop-backend) (Replace with actual link)
 
-Follow these steps:
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React (Vite), Tailwind CSS
+- **Backend:** Node.js, Express.js, MongoDB
+- **Authentication:** Clerk
+- **Database:** MongoDB
+- **Deployment:** Vercel (Frontend), Render/Heroku (Backend)
+
+---
+
+## ⚙️ Setup & Installation
+
+### 1️⃣ Clone the Repository
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone https://github.com/yourusername/perfume-shop.git
+cd perfume-shop
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 2️⃣ Setup Frontend
 
-# Step 3: Install the necessary dependencies.
-npm i
+```sh
+cd client
+npm install
+```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Create a `.env` file in the `client` directory and add:
+
+```sh
+VITE_API_URL=http://localhost:3001/api/products
+```
+
+Start the frontend server:
+
+```sh
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📷 Screenshots
 
-**Use GitHub Codespaces**
+![Home Page](screenshots/homepage.png)
+![Product Page](screenshots/productpage.png)
+![Cart Page](screenshots/cartpage.png)
+![Authentication Page](screenshots/authpage.png)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 🛠️ Upcoming Features
 
-This project is built with .
+- Payment Integration
+- Wishlist Feature
+- Order History
+- Admin Dashboard for Product Management
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 💡 Connect
 
-Simply open [Lovable](https://lovable.dev/projects/17a28b11-d18f-4e32-9bd9-0b1b04fb0c52) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+For any queries, reach out at [keshavaradha990@gmail.com](mailto:keshavaradha990@gmail.com)
