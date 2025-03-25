@@ -1,4 +1,3 @@
-
 import { X, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { Link } from 'react-router-dom';
@@ -17,10 +16,10 @@ const Cart = () => {
   return (
     <>
       {/* Cart Icon with Item Count */}
-      <button 
+      <Link 
+        to="/cart"
         className="relative p-2 rounded-full hover:bg-black/5 transition-colors"
-        onClick={() => setIsCartOpen(true)}
-        aria-label="Open cart"
+        aria-label="View cart"
       >
         <ShoppingBag className="w-5 h-5" />
         {totalItems > 0 && (
@@ -28,7 +27,7 @@ const Cart = () => {
             {totalItems}
           </span>
         )}
-      </button>
+      </Link>
 
       {/* Cart Sidebar */}
       <div className={`fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 ${
@@ -142,17 +141,19 @@ const Cart = () => {
                 <span>${totalPrice.toFixed(2)}</span>
               </div>
               <Link
-                to="/checkout"
+                to="/cart"
                 className="mt-4 w-full py-3 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
-              >
-                Proceed to Checkout
-              </Link>
-              <button
                 onClick={() => setIsCartOpen(false)}
-                className="mt-3 w-full py-3 border border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
               >
-                Continue Shopping
-              </button>
+                View Cart
+              </Link>
+              <Link
+                to="/checkout"
+                className="mt-3 w-full py-3 border border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
+                onClick={() => setIsCartOpen(false)}
+              >
+                Checkout
+              </Link>
             </div>
           )}
         </div>
