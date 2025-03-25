@@ -1,14 +1,12 @@
 
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { products } from '../data/products';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Search, Filter } from 'lucide-react';
-import { fetchProducts } from '../services/api';
-import { Product } from '../types/product';
-import { Skeleton } from '@/components/ui/skeleton';
 
 const categoryOptions = [
   { value: 'all', label: 'All Categories' },
@@ -40,9 +38,6 @@ const Shop = () => {
   const [collection, setCollection] = useState(collectionParam || 'all');
   const [sortBy, setSortBy] = useState('featured');
   const [searchQuery, setSearchQuery] = useState('');
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   // Update collection state when URL param changes
   useEffect(() => {
@@ -51,35 +46,22 @@ const Shop = () => {
     }
   }, [collectionParam]);
 
-  // Fetch products from API
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchProducts();
-        setProducts(data);
-        setError(null);
-      } catch (err) {
-        setError('Failed to load products. Please try again later.');
-        console.error('Error loading products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    loadProducts();
-  }, []);
-
   // Helper function to determine if a product is in a collection
-  const isInCollection = (product: Product, collectionName: string) => {
+  const isInCollection = (productId: number, collectionName: string) => {
     if (collectionName === 'all') return true;
     
     switch(collectionName) {
       case 'signature':
       case 'luxury':
-        return product.featured;
+        return products.find(p => p.id === productId)?.featured || false;
       case 'seasonal':
-        return product.new;
+        return products.find(p => p.id === productId)?.new || false;
+      case 'men':
+        return products.find(p => p.id === productId)?.category === 'men';
+      case 'women':
+        return products.find(p => p.id === productId)?.category === 'women';
+      case 'unisex':
+        return products.find(p => p.id === productId)?.category === 'unisex';
       default:
         return true;
     }
@@ -93,7 +75,7 @@ const Shop = () => {
     }
     
     // Apply collection filter
-    if (collection !== 'all' && !isInCollection(product, collection)) {
+    if (collection !== 'all' && !isInCollection(product.id, collection)) {
       return false;
     }
     
@@ -145,7 +127,6 @@ const Shop = () => {
                 className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                disabled={loading}
               />
             </div>
             
@@ -156,7 +137,6 @@ const Shop = () => {
                 className="w-full py-2 pl-3 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-black appearance-none bg-white"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                disabled={loading}
               >
                 {categoryOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -173,7 +153,6 @@ const Shop = () => {
                 className="w-full py-2 pl-3 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-black appearance-none bg-white"
                 value={collection}
                 onChange={(e) => setCollection(e.target.value)}
-                disabled={loading}
               >
                 {collectionOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -190,7 +169,6 @@ const Shop = () => {
                 className="w-full py-2 pl-3 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-black appearance-none bg-white"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                disabled={loading}
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -201,99 +179,57 @@ const Shop = () => {
             </div>
           </div>
           
-          {/* Error state */}
-          {error && (
+          {/* Results count */}
+          <p className="text-gray-500 mb-6">
+            Showing {sortedProducts.length} {sortedProducts.length === 1 ? 'product' : 'products'}
+          </p>
+          
+          {/* Products Grid */}
+          {sortedProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+              {sortedProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
+              ))}
+            </div>
+          ) : (
             <div className="text-center py-16">
-              <p className="text-red-500 mb-4">{error}</p>
+              <p className="text-gray-500">No products found matching your criteria.</p>
               <button
-                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
-                onClick={() => window.location.reload()}
+                className="mt-4 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                onClick={() => {
+                  setCategory('all');
+                  setCollection('all');
+                  setSortBy('featured');
+                  setSearchQuery('');
+                }}
               >
-                Try Again
+                Reset Filters
               </button>
             </div>
           )}
           
-          {/* Loading state */}
-          {loading && (
-            <>
-              {/* Results count skeleton */}
-              <Skeleton className="h-5 w-36 mb-6" />
-              
-              {/* Products grid skeleton */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-                {[...Array(8)].map((_, i) => (
-                  <div key={i} className="space-y-4">
-                    <Skeleton className="h-[300px] w-full rounded-lg" />
-                    <Skeleton className="h-4 w-1/4" />
-                    <Skeleton className="h-6 w-3/4" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-6 w-1/4" />
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-          
-          {/* Results count - only show when not loading and no error */}
-          {!loading && !error && (
-            <p className="text-gray-500 mb-6">
-              Showing {sortedProducts.length} {sortedProducts.length === 1 ? 'product' : 'products'}
-            </p>
-          )}
-          
-          {/* Products Grid - only show when not loading and no error */}
-          {!loading && !error && (
-            <>
-              {sortedProducts.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-                  {sortedProducts.map((product, index) => (
-                    <ProductCard key={product._id} product={product} index={index} />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-16">
-                  <p className="text-gray-500">No products found matching your criteria.</p>
-                  <button
-                    className="mt-4 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
-                    onClick={() => {
-                      setCategory('all');
-                      setCollection('all');
-                      setSortBy('featured');
-                      setSearchQuery('');
-                    }}
-                  >
-                    Reset Filters
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-          
-          {/* Pagination - only show when not loading and we have products */}
-          {!loading && !error && sortedProducts.length > 0 && (
-            <div className="mt-12">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious href="#" />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#" isActive>1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext href="#" />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
+          {/* Pagination */}
+          <div className="mt-12">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious href="#" />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#" isActive>1</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">2</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">3</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext href="#" />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
       </main>
       

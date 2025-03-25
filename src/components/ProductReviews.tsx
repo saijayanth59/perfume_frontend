@@ -8,7 +8,7 @@ import { ChevronDown, ChevronUp, Star, LogIn } from "lucide-react";
 import { useAuth, SignInButton } from "@clerk/clerk-react";
 
 interface ProductReviewsProps {
-  productId: string;
+  productId: number;
 }
 
 export function ProductReviews({ productId }: ProductReviewsProps) {

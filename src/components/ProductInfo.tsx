@@ -1,6 +1,6 @@
 
 import { Star } from 'lucide-react';
-import { Product } from '../types/product';
+import { Product } from '../data/products';
 
 interface ProductInfoProps {
   product: Product;
@@ -24,11 +24,11 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           {Array.from({ length: 5 }).map((_, i) => (
             <Star 
               key={i} 
-              className={`w-4 h-4 ${i < Math.round(product.avgRating) ? 'text-amber-500 fill-current' : 'text-gray-300'}`}
+              className={`w-4 h-4 ${i < product.rating ? 'text-amber-500 fill-current' : 'text-gray-300'}`}
             />
           ))}
         </div>
-        <span className="ml-2 text-sm text-gray-500">({product.avgRating.toFixed(1)} / 5)</span>
+        <span className="ml-2 text-sm text-gray-500">({product.rating} / 5)</span>
       </div>
       
       <div className="mt-6 text-2xl font-bold">

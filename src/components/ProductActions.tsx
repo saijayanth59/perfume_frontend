@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Heart, ShoppingBag } from 'lucide-react';
-import { Product } from '../types/product';
+import { Product } from '../data/products';
 import { useCart } from '../contexts/CartContext';
 import { toast } from 'sonner';
 
@@ -10,7 +10,7 @@ interface ProductActionsProps {
 }
 
 const ProductActions = ({ product }: ProductActionsProps) => {
-  const [selectedSize, setSelectedSize] = useState<string>(product.sizes[0]?.size || '');
+  const [selectedSize, setSelectedSize] = useState<string>(product.sizes[0].size);
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
 

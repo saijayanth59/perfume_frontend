@@ -51,7 +51,7 @@ const Cart = () => {
               const sizePrice = item.product.sizes.find(s => s.size === item.size)?.price || item.product.price;
               
               return (
-                <div key={`${item.product._id}-${item.size}`} className="flex border rounded-lg p-4 shadow-sm">
+                <div key={`${item.product.id}-${item.size}`} className="flex border rounded-lg p-4 shadow-sm">
                   {/* Product Image */}
                   <div className="w-24 h-24 rounded-md overflow-hidden">
                     <img 
@@ -65,7 +65,7 @@ const Cart = () => {
                   <div className="flex-1 ml-4">
                     <div className="flex justify-between">
                       <div>
-                        <Link to={`/product/${item.product._id}`} className="text-lg font-medium hover:underline">
+                        <Link to={`/product/${item.product.id}`} className="text-lg font-medium hover:underline">
                           {item.product.name}
                         </Link>
                         <p className="text-sm text-gray-500 mt-1">{item.product.brand}</p>
@@ -78,7 +78,7 @@ const Cart = () => {
                     <div className="flex items-center justify-between mt-3">
                       <div className="flex items-center border rounded-md">
                         <button 
-                          onClick={() => updateQuantity(item.product._id, item.size, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.product.id, item.size, item.quantity - 1)}
                           className="p-2 hover:bg-gray-100"
                           aria-label="Decrease quantity"
                         >
@@ -86,7 +86,7 @@ const Cart = () => {
                         </button>
                         <span className="px-4 text-sm">{item.quantity}</span>
                         <button 
-                          onClick={() => updateQuantity(item.product._id, item.size, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.product.id, item.size, item.quantity + 1)}
                           className="p-2 hover:bg-gray-100"
                           aria-label="Increase quantity"
                         >
@@ -94,7 +94,7 @@ const Cart = () => {
                         </button>
                       </div>
                       <button 
-                        onClick={() => removeItem(item.product._id, item.size)}
+                        onClick={() => removeItem(item.product.id, item.size)}
                         className="text-sm text-gray-500 hover:text-black transition-colors"
                       >
                         Remove

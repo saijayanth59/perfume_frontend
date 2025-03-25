@@ -25,14 +25,14 @@ const formSchema = z.object({
 });
 
 interface ReviewFormProps {
-  productId: string;
+  productId: number;
   onReviewSubmit: (review: ReviewData) => void;
 }
 
 export type ReviewData = z.infer<typeof formSchema> & {
   id: string;
   date: string;
-  productId: string;
+  productId: number;
   name: string;
   email: string;
 };
