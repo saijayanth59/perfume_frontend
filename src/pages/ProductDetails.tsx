@@ -6,6 +6,8 @@ import { getProductById, Product } from '../data/products';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { toast } from 'sonner';
+import { ProductReviews } from '../components/ProductReviews';
+import { useCart } from '../contexts/CartContext';
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,6 +16,7 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [currentImage, setCurrentImage] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
+  const { addItem } = useCart();
 
   useEffect(() => {
     const fetchProduct = () => {
@@ -40,7 +43,10 @@ const ProductDetails = () => {
   }, [id]);
 
   const handleAddToCart = () => {
-    toast.success(`Added ${product?.name} to your cart`);
+    if (product) {
+      addItem(product, selectedSize, quantity);
+      toast.success(`Added ${product.name} to your cart`);
+    }
   };
 
   const handleAddToWishlist = () => {
@@ -243,6 +249,11 @@ const ProductDetails = () => {
                 </div>
               </div>
             </div>
+          </div>
+          
+          {/* Reviews Section */}
+          <div className="mt-16 border-t border-gray-200 pt-16">
+            <ProductReviews productId={Number(id)} />
           </div>
         </div>
       </main>
