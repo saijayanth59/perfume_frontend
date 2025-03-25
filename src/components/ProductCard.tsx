@@ -1,8 +1,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Heart } from 'lucide-react';
-import { Product } from '../data/products';
+import { ShoppingBag, Heart, Star } from 'lucide-react';
+import { Product } from '../types/product';
 import { useCart } from '../contexts/CartContext';
 
 interface ProductCardProps {
@@ -58,7 +58,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
     >
       {/* Product Image */}
       <div className="overflow-hidden rounded-lg aspect-[3/4] mb-4">
-        <Link to={`/product/${product.id}`}>
+        <Link to={`/product/${product._id}`}>
           <div className="relative w-full h-full">
             <img 
               src={product.images[0]} 
@@ -110,23 +110,16 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
           </h3>
           <div className="flex items-center">
             {Array.from({ length: 5 }).map((_, i) => (
-              <svg 
+              <Star 
                 key={i} 
-                width="12" 
-                height="12" 
-                viewBox="0 0 24 24" 
-                fill={i < product.rating ? "currentColor" : "none"} 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                className={`w-3 h-3 ${i < product.rating ? 'text-amber-500' : 'text-gray-300'}`}
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
+                size={12} 
+                className={`w-3 h-3 ${i < Math.round(product.avgRating) ? 'text-amber-500 fill-current' : 'text-gray-300'}`}
+              />
             ))}
           </div>
         </div>
         
-        <Link to={`/product/${product.id}`}>
+        <Link to={`/product/${product._id}`}>
           <h2 className="mt-1 text-lg font-medium transition-colors hover:text-gray-600">
             {product.name}
           </h2>

@@ -1,21 +1,46 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from './ProductCard';
-import { getFeaturedProducts, getNewProducts, Product } from '../data/products';
+import { fetchProducts } from '../services/api';
+import { Product } from '../types/product';
+import { Skeleton } from './ui/skeleton';
 
 const ProductSection = () => {
   const [activeTab, setActiveTab] = useState('featured');
-  const featuredProducts = getFeaturedProducts();
-  const newProducts = getNewProducts();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchProducts();
+        setProducts(data);
+        setError(null);
+      } catch (err) {
+        setError('Failed to load products. Please try again later.');
+        console.error('Error loading products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadProducts();
+  }, []);
+  
+  // Filter products based on active tab
+  const getFeaturedProducts = () => products.filter(product => product.featured);
+  const getNewProducts = () => products.filter(product => product.new);
   
   // Determine which products to display based on the active tab
   const displayProducts = activeTab === 'featured' 
-    ? featuredProducts 
+    ? getFeaturedProducts() 
     : activeTab === 'new' 
-      ? newProducts 
-      : featuredProducts; // Default to featured
+      ? getNewProducts() 
+      : getFeaturedProducts(); // Default to featured
   
   return (
     <section className="py-24 px-4 md:px-6">
@@ -38,6 +63,7 @@ const ProductSection = () => {
                     : 'hover:bg-gray-100'
                 }`}
                 onClick={() => setActiveTab('featured')}
+                disabled={loading}
               >
                 Featured
               </button>
@@ -48,6 +74,7 @@ const ProductSection = () => {
                     : 'hover:bg-gray-100'
                 }`}
                 onClick={() => setActiveTab('new')}
+                disabled={loading}
               >
                 New Arrivals
               </button>
@@ -58,6 +85,7 @@ const ProductSection = () => {
                     : 'hover:bg-gray-100'
                 }`}
                 onClick={() => setActiveTab('bestsellers')}
+                disabled={loading}
               >
                 Bestsellers
               </button>
@@ -65,12 +93,48 @@ const ProductSection = () => {
           </div>
         </div>
         
+        {/* Error message */}
+        {error && (
+          <div className="text-center py-10">
+            <p className="text-red-500">{error}</p>
+            <button 
+              className="mt-4 px-4 py-2 bg-black text-white rounded-lg"
+              onClick={() => window.location.reload()}
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+        
+        {/* Loading skeleton */}
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-[300px] w-full rounded-lg" />
+                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-6 w-1/4" />
+              </div>
+            ))}
+          </div>
+        )}
+        
         {/* Products grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-          {displayProducts.map((product, index) => (
-            <ProductCard key={product.id} product={product} index={index} />
-          ))}
-        </div>
+        {!loading && !error && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+            {displayProducts.length > 0 ? (
+              displayProducts.map((product, index) => (
+                <ProductCard key={product._id} product={product} index={index} />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-10">
+                <p className="text-gray-500">No products found in this category.</p>
+              </div>
+            )}
+          </div>
+        )}
         
         {/* View all link */}
         <div className="mt-16 text-center">
