@@ -16,8 +16,8 @@ import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 
-// You will need to replace this with your actual Clerk publishable key
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+// Using the provided Clerk publishable key
+const PUBLISHABLE_KEY = "pk_test_b3B0aW1hbC10b21jYXQtMjEuY2xlcmsuYWNjb3VudHMuZGV2JA";
 
 // Check if the key is available
 if (!PUBLISHABLE_KEY) {
