@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Heart, ShoppingBag, ArrowLeft, Star } from 'lucide-react';
@@ -38,7 +37,6 @@ const ProductDetails = () => {
     };
 
     fetchProduct();
-    // Scroll to top when component mounts
     window.scrollTo(0, 0);
   }, [id]);
 
@@ -82,7 +80,6 @@ const ProductDetails = () => {
       <NavBar />
       <main className="pt-24 pb-16 px-4 md:px-6">
         <div className="container mx-auto">
-          {/* Breadcrumbs */}
           <nav className="flex items-center text-sm mb-8">
             <Link to="/" className="text-gray-500 hover:text-black transition-colors">
               Home
@@ -96,9 +93,7 @@ const ProductDetails = () => {
           </nav>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Product Images */}
             <div className="space-y-4">
-              {/* Main Image */}
               <div className="aspect-square overflow-hidden rounded-lg bg-gray-50">
                 <img 
                   src={currentImage} 
@@ -107,7 +102,6 @@ const ProductDetails = () => {
                 />
               </div>
               
-              {/* Thumbnails */}
               <div className="flex space-x-4">
                 {product.images.map((image, index) => (
                   <button
@@ -127,7 +121,6 @@ const ProductDetails = () => {
               </div>
             </div>
             
-            {/* Product Information */}
             <div className="opacity-0 animate-fade-in">
               {product.new && (
                 <span className="inline-block py-1 px-3 mb-4 bg-black/5 rounded-full text-xs uppercase tracking-wider font-medium">
@@ -139,7 +132,6 @@ const ProductDetails = () => {
               
               <div className="mt-2 text-lg text-gray-500">{product.brand}</div>
               
-              {/* Rating */}
               <div className="mt-4 flex items-center">
                 <div className="flex">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -152,17 +144,14 @@ const ProductDetails = () => {
                 <span className="ml-2 text-sm text-gray-500">({product.rating} / 5)</span>
               </div>
               
-              {/* Price */}
               <div className="mt-6 text-2xl font-bold">
                 ${product.price.toFixed(2)}
               </div>
               
-              {/* Description */}
               <p className="mt-6 text-gray-600 leading-relaxed">
                 {product.description}
               </p>
               
-              {/* Size selection */}
               <div className="mt-8">
                 <h3 className="font-medium mb-3">Size</h3>
                 <div className="flex flex-wrap gap-3">
@@ -182,7 +171,6 @@ const ProductDetails = () => {
                 </div>
               </div>
               
-              {/* Quantity */}
               <div className="mt-8">
                 <h3 className="font-medium mb-3">Quantity</h3>
                 <div className="flex items-center">
@@ -203,7 +191,6 @@ const ProductDetails = () => {
                 </div>
               </div>
               
-              {/* Actions */}
               <div className="mt-8 flex flex-wrap gap-4">
                 <button 
                   className="flex-1 py-3 px-6 bg-black text-white rounded-full hover:bg-gray-800 transition-colors flex items-center justify-center"
@@ -221,7 +208,6 @@ const ProductDetails = () => {
                 </button>
               </div>
               
-              {/* Share */}
               <div className="mt-10 pt-6 border-t border-gray-200">
                 <h3 className="font-medium mb-3">Share</h3>
                 <div className="flex space-x-3">
@@ -251,7 +237,6 @@ const ProductDetails = () => {
             </div>
           </div>
           
-          {/* Reviews Section */}
           <div className="mt-16 border-t border-gray-200 pt-16">
             <ProductReviews productId={Number(id)} />
           </div>

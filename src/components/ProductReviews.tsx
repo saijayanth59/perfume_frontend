@@ -4,7 +4,7 @@ import { ReviewForm, ReviewData } from "./ReviewForm";
 import { ReviewsList } from "./ReviewsList";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Star } from "lucide-react";
 
 interface ProductReviewsProps {
   productId: number;
