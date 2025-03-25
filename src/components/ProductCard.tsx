@@ -43,7 +43,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
     e.stopPropagation();
     // Default to the first size option or use the default price
     const defaultSize = product.sizes[0]?.size || '50ml';
-    addItem(product, defaultSize);
+    addItem(product, defaultSize, 1);  // Added the quantity parameter (1 as default)
   };
 
   return (
