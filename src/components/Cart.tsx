@@ -1,6 +1,8 @@
-import { X, Plus, Minus, ShoppingBag } from 'lucide-react';
+
+import { X, Plus, Minus, ShoppingBag, LogIn } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { Link } from 'react-router-dom';
+import { useAuth, SignInButton } from '@clerk/clerk-react';
 
 const Cart = () => {
   const { 
@@ -12,12 +14,14 @@ const Cart = () => {
     totalItems,
     totalPrice
   } = useCart();
+  
+  const { isSignedIn } = useAuth();
 
   return (
     <>
       {/* Cart Icon with Item Count */}
       <Link 
-        to="/cart"
+        to={isSignedIn ? "/cart" : "/sign-in"}
         className="relative p-2 rounded-full hover:bg-black/5 transition-colors"
         aria-label="View cart"
       >
@@ -53,108 +57,127 @@ const Cart = () => {
             <p className="text-gray-500 mt-1">{totalItems} item{totalItems !== 1 ? 's' : ''}</p>
           </div>
 
-          {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {items.length === 0 ? (
-              <div className="text-center py-12">
-                <ShoppingBag className="w-12 h-12 mx-auto text-gray-300" />
-                <p className="mt-4 text-gray-500">Your cart is empty</p>
-                <button 
-                  onClick={() => setIsCartOpen(false)}
-                  className="mt-4 text-sm font-medium text-black underline"
-                >
-                  Continue Shopping
+          {/* Not signed in message */}
+          {!isSignedIn && (
+            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+              <ShoppingBag className="w-12 h-12 text-gray-300 mb-4" />
+              <h3 className="text-lg font-medium mb-2">Sign in to view your cart</h3>
+              <p className="text-gray-500 mb-6">Please sign in to access your shopping cart</p>
+              <SignInButton mode="modal">
+                <button className="py-2 px-4 bg-black text-white rounded-full hover:bg-gray-800 transition-colors flex items-center gap-2">
+                  <LogIn className="w-4 h-4" />
+                  Sign In
                 </button>
-              </div>
-            ) : (
-              items.map((item) => {
-                const sizePrice = item.product.sizes.find(s => s.size === item.size)?.price || item.product.price;
-                
-                return (
-                  <div key={`${item.product.id}-${item.size}`} className="flex border-b pb-4">
-                    {/* Product Image */}
-                    <div className="w-20 h-20 rounded-md overflow-hidden">
-                      <img 
-                        src={item.product.images[0]} 
-                        alt={item.product.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    
-                    {/* Product Info */}
-                    <div className="flex-1 ml-4">
-                      <div className="flex justify-between">
-                        <div>
-                          <h3 className="text-sm font-medium">{item.product.name}</h3>
-                          <p className="text-xs text-gray-500 mt-1">{item.product.brand}</p>
-                          <p className="text-xs text-gray-500 mt-1">Size: {item.size}</p>
-                        </div>
-                        <p className="text-sm font-medium">${sizePrice.toFixed(2)}</p>
-                      </div>
-                      
-                      {/* Quantity Controls & Remove */}
-                      <div className="flex items-center justify-between mt-3">
-                        <div className="flex items-center border rounded-md">
-                          <button 
-                            onClick={() => updateQuantity(item.product.id, item.size, item.quantity - 1)}
-                            className="p-1 hover:bg-gray-100"
-                            aria-label="Decrease quantity"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="px-2 text-sm">{item.quantity}</span>
-                          <button 
-                            onClick={() => updateQuantity(item.product.id, item.size, item.quantity + 1)}
-                            className="p-1 hover:bg-gray-100"
-                            aria-label="Increase quantity"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
-                        </div>
-                        <button 
-                          onClick={() => removeItem(item.product.id, item.size)}
-                          className="text-xs text-gray-500 hover:text-black transition-colors"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-
-          {/* Cart Footer */}
-          {items.length > 0 && (
-            <div className="border-t p-4">
-              <div className="flex justify-between py-2">
-                <span className="text-gray-500">Subtotal</span>
-                <span className="font-medium">${totalPrice.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between py-2">
-                <span className="text-gray-500">Shipping</span>
-                <span className="font-medium">Calculated at checkout</span>
-              </div>
-              <div className="flex justify-between py-2 text-lg font-medium">
-                <span>Total</span>
-                <span>${totalPrice.toFixed(2)}</span>
-              </div>
-              <Link
-                to="/cart"
-                className="mt-4 w-full py-3 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
-                onClick={() => setIsCartOpen(false)}
-              >
-                View Cart
-              </Link>
-              <Link
-                to="/checkout"
-                className="mt-3 w-full py-3 border border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
-                onClick={() => setIsCartOpen(false)}
-              >
-                Checkout
-              </Link>
+              </SignInButton>
             </div>
+          )}
+
+          {/* Cart Items (only shown when signed in) */}
+          {isSignedIn && (
+            <>
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {items.length === 0 ? (
+                  <div className="text-center py-12">
+                    <ShoppingBag className="w-12 h-12 mx-auto text-gray-300" />
+                    <p className="mt-4 text-gray-500">Your cart is empty</p>
+                    <button 
+                      onClick={() => setIsCartOpen(false)}
+                      className="mt-4 text-sm font-medium text-black underline"
+                    >
+                      Continue Shopping
+                    </button>
+                  </div>
+                ) : (
+                  items.map((item) => {
+                    const sizePrice = item.product.sizes.find(s => s.size === item.size)?.price || item.product.price;
+                    
+                    return (
+                      <div key={`${item.product.id}-${item.size}`} className="flex border-b pb-4">
+                        {/* Product Image */}
+                        <div className="w-20 h-20 rounded-md overflow-hidden">
+                          <img 
+                            src={item.product.images[0]} 
+                            alt={item.product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        
+                        {/* Product Info */}
+                        <div className="flex-1 ml-4">
+                          <div className="flex justify-between">
+                            <div>
+                              <h3 className="text-sm font-medium">{item.product.name}</h3>
+                              <p className="text-xs text-gray-500 mt-1">{item.product.brand}</p>
+                              <p className="text-xs text-gray-500 mt-1">Size: {item.size}</p>
+                            </div>
+                            <p className="text-sm font-medium">${sizePrice.toFixed(2)}</p>
+                          </div>
+                          
+                          {/* Quantity Controls & Remove */}
+                          <div className="flex items-center justify-between mt-3">
+                            <div className="flex items-center border rounded-md">
+                              <button 
+                                onClick={() => updateQuantity(item.product.id, item.size, item.quantity - 1)}
+                                className="p-1 hover:bg-gray-100"
+                                aria-label="Decrease quantity"
+                              >
+                                <Minus className="w-3 h-3" />
+                              </button>
+                              <span className="px-2 text-sm">{item.quantity}</span>
+                              <button 
+                                onClick={() => updateQuantity(item.product.id, item.size, item.quantity + 1)}
+                                className="p-1 hover:bg-gray-100"
+                                aria-label="Increase quantity"
+                              >
+                                <Plus className="w-3 h-3" />
+                              </button>
+                            </div>
+                            <button 
+                              onClick={() => removeItem(item.product.id, item.size)}
+                              className="text-xs text-gray-500 hover:text-black transition-colors"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Cart Footer */}
+              {items.length > 0 && (
+                <div className="border-t p-4">
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-500">Subtotal</span>
+                    <span className="font-medium">${totalPrice.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-500">Shipping</span>
+                    <span className="font-medium">Calculated at checkout</span>
+                  </div>
+                  <div className="flex justify-between py-2 text-lg font-medium">
+                    <span>Total</span>
+                    <span>${totalPrice.toFixed(2)}</span>
+                  </div>
+                  <Link
+                    to="/cart"
+                    className="mt-4 w-full py-3 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                    onClick={() => setIsCartOpen(false)}
+                  >
+                    View Cart
+                  </Link>
+                  <Link
+                    to="/checkout"
+                    className="mt-3 w-full py-3 border border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
+                    onClick={() => setIsCartOpen(false)}
+                  >
+                    Checkout
+                  </Link>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

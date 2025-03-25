@@ -4,7 +4,8 @@ import { ReviewForm, ReviewData } from "./ReviewForm";
 import { ReviewsList } from "./ReviewsList";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Star } from "lucide-react";
+import { ChevronDown, ChevronUp, Star, LogIn } from "lucide-react";
+import { useAuth, SignInButton } from "@clerk/clerk-react";
 
 interface ProductReviewsProps {
   productId: number;
@@ -13,6 +14,7 @@ interface ProductReviewsProps {
 export function ProductReviews({ productId }: ProductReviewsProps) {
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const { isSignedIn } = useAuth();
   
   // Load reviews from localStorage on component mount
   useEffect(() => {
@@ -82,7 +84,20 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
       </Collapsible>
       
       <div className="mt-12">
-        <ReviewForm productId={productId} onReviewSubmit={handleReviewSubmit} />
+        {isSignedIn ? (
+          <ReviewForm productId={productId} onReviewSubmit={handleReviewSubmit} />
+        ) : (
+          <div className="bg-gray-50 p-6 rounded-lg text-center">
+            <h3 className="text-xl font-semibold mb-2">Sign in to leave a review</h3>
+            <p className="text-gray-600 mb-4">Please sign in to share your experience with this product</p>
+            <SignInButton mode="modal">
+              <Button className="flex items-center gap-2">
+                <LogIn className="h-4 w-4" />
+                Sign in to write a review
+              </Button>
+            </SignInButton>
+          </div>
+        )}
       </div>
     </div>
   );

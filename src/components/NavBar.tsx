@@ -1,13 +1,15 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Menu, X } from 'lucide-react';
+import { Search, Menu, X, UserRound, LogOut } from 'lucide-react';
+import { SignInButton, SignUpButton, UserButton, useAuth } from '@clerk/clerk-react';
 import Cart from './Cart';
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { isSignedIn } = useAuth();
 
   // Update scrolled state on scroll
   useEffect(() => {
@@ -83,6 +85,22 @@ const NavBar = () => {
               <Search className="w-5 h-5" />
             </button>
             
+            {/* Auth Buttons or User Button */}
+            {isSignedIn ? (
+              <div className="relative p-2 rounded-full hover:bg-black/5 transition-colors">
+                <UserButton />
+              </div>
+            ) : (
+              <div className="hidden md:flex items-center space-x-2">
+                <SignInButton mode="modal">
+                  <button className="p-2 rounded-full hover:bg-black/5 transition-colors flex items-center text-sm font-medium">
+                    <UserRound className="w-5 h-5 mr-1" />
+                    Sign In
+                  </button>
+                </SignInButton>
+              </div>
+            )}
+            
             {/* Cart Component */}
             <Cart />
             
@@ -137,6 +155,21 @@ const NavBar = () => {
           >
             About
           </Link>
+          {!isSignedIn && (
+            <div className="flex flex-col space-y-4">
+              <SignInButton mode="modal">
+                <button className="text-xl font-medium flex items-center justify-center">
+                  <UserRound className="w-5 h-5 mr-2" />
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="text-xl font-medium">
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </div>
+          )}
         </div>
       </div>
     </header>
