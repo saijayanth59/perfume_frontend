@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ShoppingBag, Menu, X } from 'lucide-react';
+import { Search, Menu, X } from 'lucide-react';
+import Cart from './Cart';
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -72,13 +73,9 @@ const NavBar = () => {
             >
               <Search className="w-5 h-5" />
             </button>
-            <Link 
-              to="/cart" 
-              className="p-2 rounded-full hover:bg-black/5 transition-colors"
-              aria-label="Shopping cart"
-            >
-              <ShoppingBag className="w-5 h-5" />
-            </Link>
+            
+            {/* Cart Component */}
+            <Cart />
             
             {/* Mobile menu button */}
             <button 

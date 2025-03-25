@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Heart } from 'lucide-react';
 import { Product } from '../data/products';
+import { useCart } from '../contexts/CartContext';
 
 interface ProductCardProps {
   product: Product;
@@ -13,6 +14,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const { addItem } = useCart();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -35,6 +37,14 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
       }
     };
   }, []);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Default to the first size option or use the default price
+    const defaultSize = product.sizes[0]?.size || '50ml';
+    addItem(product, defaultSize);
+  };
 
   return (
     <div 
@@ -85,6 +95,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
           <button 
             className="p-2.5 rounded-full bg-white shadow-md hover:bg-black hover:text-white transition-colors"
             aria-label="Add to cart"
+            onClick={handleAddToCart}
           >
             <ShoppingBag className="w-4 h-4" />
           </button>
