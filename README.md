@@ -75,16 +75,39 @@ npm run dev
 
 ## 📷 Screenshots
 
+### 🏠 Home Page
+
 ![Home Page](screenshots/hero.png)
 ![Home page showcase](screenshots/homepage_showcase.png)
+
+### 🔐 Authentication
+
 ![Sign In](screenshots/signin_google.png)
+
+### 🛍️ Products Listing
+
 ![Products page 1](screenshots/products_display1.png)
 ![Products page 1.1](screenshots/products_display2.png)
+
+### 🔎 Product Details
+
 ![Product View page](screenshots/single_product_display1.png)
+
+### ⭐ Reviews Section
+
 ![Reviews](screenshots/reviews.png)
 ![Review form section](screenshots/review_submit.png)
+
+### 🛒 Shopping Cart
+
 ![Cart Page](screenshots/cart.png)
+
+### 📂 Collections
+
 ![Collections page](screenshots/collections_layout1.png)
+
+### ℹ️ About Us
+
 ![About section 1](screenshots/about1.png)
 ![About section 2](screenshots/about2.png)
 ![About section 3](screenshots/about3.png)
