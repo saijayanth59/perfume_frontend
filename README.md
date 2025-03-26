@@ -30,7 +30,7 @@ An elegant and interactive perfume e-commerce platform built using **React (Vite
 - **Social Sharing** – Share product details via social media.
 - **User Authentication (Clerk)** – Secure login/logout functionality.
 
-🔗 **Backend Repository:** [GitHub Link](https://github.com/yourusername/perfume-shop-backend) (Replace with actual link)
+🔗 **Backend Repository:** [GitHub Link](https://github.com/saijayanth59/perfume_frontend) (Replace with actual link)
 
 ---
 
@@ -56,7 +56,6 @@ cd perfume-shop
 ### 2️⃣ Setup Frontend
 
 ```sh
-cd client
 npm install
 ```
 
@@ -76,10 +75,19 @@ npm run dev
 
 ## 📷 Screenshots
 
-![Home Page](screenshots/homepage.png)
-![Product Page](screenshots/productpage.png)
-![Cart Page](screenshots/cartpage.png)
-![Authentication Page](screenshots/authpage.png)
+![Home Page](screenshots/hero.png)
+![Home page showcase](screenshots/homepage_showcase.png)
+![Sign In](screenshots/signin_google.png)
+![Products page 1](screenshots/products_display1.png)
+![Products page 1.1](screenshots/products_display2.png)
+![Product View page](screenshots/single_product_display1.png)
+![Reviews](screenshots/reviews.png)
+![Review form section](screenshots/review_submit.png)
+![Cart Page](screenshots/cart.png)
+![Collections page](screenshots/collections_layout1.png)
+![About section 1](screenshots/about1.png)
+![About section 2](screenshots/about2.png)
+![About section 3](screenshots/about3.png)
 
 ---
 
